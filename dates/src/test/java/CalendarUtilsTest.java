@@ -1,7 +1,10 @@
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,13 +13,58 @@ import java.util.GregorianCalendar;
 public class CalendarUtilsTest {
 
     SimpleDateFormat sdf;
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final PrintStream originalOut = System.out;
+
+
 
     @Before
     public void setUp() throws Exception {
         sdf = new SimpleDateFormat("dd.MM.yyyy");
+        System.setOut(new PrintStream(outContent));
+
+
 
     }
 
+    @After
+    public void tearDown() throws Exception {
+        System.setOut(originalOut);
+    }
+
+    @Test
+    public void getDaysForYear() {
+        CalendarUtils.getDaysForYear(2019);
+        Assert.assertEquals("Jan has 31 days\n" +
+                "Feb has 28 days\n" +
+                "Mar has 31 days\n" +
+                "Apr has 30 days\n" +
+                "May has 31 days\n" +
+                "Jun has 30 days\n" +
+                "Jul has 31 days\n" +
+                "Aug has 31 days\n" +
+                "Sep has 30 days\n" +
+                "Oct has 31 days\n" +
+                "Nov has 30 days\n" +
+                "Dec has 31 days\n",outContent.toString());
+    }
+
+    @Test
+    public void getMondaysDates(){
+        CalendarUtils.getMondaysDates(11,2019);
+        Assert.assertEquals("04.11.2019\n" +
+                "11.11.2019\n" +
+                "18.11.2019\n" +
+                "25.11.2019\n",outContent.toString());
+    }
+
+   /* @Test
+    public void getLocalDate(){
+        Assert.assertEquals("Sun, 2019 November 03 22:34:46\n" +
+                "So, 2019 November 03 22:34:46\n" +
+                "Sun, 2019 November 03 22:34:46\n" +
+                "星期日, 2019 十一月 03 22:34:46\n",outContent.toString());
+    }*/
     @Test
     public void isFriday13() {
 
@@ -61,4 +109,6 @@ public class CalendarUtilsTest {
         CalendarUtils.gregorianCalendarYearCheck(GregorianCalendar.getInstance().getActualMaximum(Calendar.YEAR)+1);
 
     }
+
+
 }

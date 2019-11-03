@@ -7,9 +7,9 @@ import java.util.Locale;
 
 
 public class CalendarUtils {
-    
+
     public static void main(String[] args) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
         getDaysForYear(2019);
         getMondaysDates(11, 2019);
 
@@ -36,7 +36,7 @@ public class CalendarUtils {
         gregorianCalendarYearCheck(year);
 
         Calendar calendar = new GregorianCalendar(year, Calendar.JANUARY, 1);
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM");
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM", Locale.US);
 
         for (int i = calendar.get(Calendar.MONTH); i <= calendar.getActualMaximum(Calendar.MONTH); i++) {
             calendar.set(year, i, 1);
