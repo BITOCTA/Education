@@ -5,23 +5,28 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-
+//
 public class CalendarUtils {
 
-    public static void main(String[] args) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
-        getDaysForYear(2019);
-        getMondaysDates(11, 2019);
+    private final DateTime dateTime;
 
-        try {
-            isFriday13(sdf.parse("13.09.2019"));
-            isFriday13(sdf.parse("13.10.2019"));
-            getDateFromDate(sdf.parse("02.12.2017"));
-        } catch (ParseException e) {
-            e.printStackTrace();
+    interface DateTime{
+        Date getDate();
+    }
+
+    class DateTimeImpl implements DateTime {
+        @Override
+        public Date getDate() {
+            return new Date();
         }
+    }
 
-        getLocalDate();
+    public CalendarUtils(final DateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public static void main(String[] args) {
+
     }
 
 
@@ -98,7 +103,7 @@ public class CalendarUtils {
      * @return
      */
 
-    public static String getDateFromDate(Date date) {
+    public String getDateFromDate(Date date) {
 
         if (date.getTime() > new Date().getTime()) {
             throw new IllegalArgumentException("Param \"date\" should contain date in the past");
@@ -107,7 +112,8 @@ public class CalendarUtils {
         Calendar todaysDate = Calendar.getInstance();
         Calendar usersDate = Calendar.getInstance();
         usersDate.setTime(date);
-        todaysDate.setTime(new Date());
+
+        todaysDate.setTime(dateTime.getDate());
 
 
         int day;
@@ -144,13 +150,14 @@ public class CalendarUtils {
      * Prints current date in format "EEE, yyyy MMMMM dd HH:mm:ss" for four locales: {Canada, Germany, Pakistan, Taiwan}
      */
 
-    public static void getLocalDate() {
+    public  void getLocalDate() {
 
         SimpleDateFormat sdfCanada = new SimpleDateFormat("EEE, yyyy MMMMM dd HH:mm:ss", Locale.CANADA);
         SimpleDateFormat sdfGermany = new SimpleDateFormat("EEE, yyyy MMMMM dd HH:mm:ss", Locale.GERMANY);
         SimpleDateFormat sdfPakistan = new SimpleDateFormat("EEE, yyyy MMMMM dd HH:mm:ss", Locale.forLanguageTag("ur_PK"));
         SimpleDateFormat sdfTaiwan = new SimpleDateFormat("EEE, yyyy MMMMM dd HH:mm:ss", Locale.TAIWAN);
         Date date = new Date();
+        date.setTime(dateTime.getDate().getTime());
         System.out.println(sdfCanada.format(date));
         System.out.println(sdfGermany.format(date));
         System.out.println(sdfPakistan.format(date));

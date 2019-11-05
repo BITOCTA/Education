@@ -2,19 +2,23 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+
 
 public class CalendarUtilsTest {
 
     SimpleDateFormat sdf;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
+    private CalendarUtils calendarUtils;
 
 
 
@@ -22,6 +26,16 @@ public class CalendarUtilsTest {
     public void setUp() throws Exception {
         sdf = new SimpleDateFormat("dd.MM.yyyy");
         System.setOut(new PrintStream(outContent));
+
+
+        // Mocking date to 03.11.2019 00:00:00
+        final Date date = Mockito.mock(Date.class);
+        Mockito.when(date.getTime()).thenReturn(1572735600000L);
+
+        final CalendarUtils.DateTime dt = Mockito.mock(CalendarUtils.DateTime.class);
+        Mockito.when(dt.getDate()).thenReturn(date);
+
+        calendarUtils = new CalendarUtils(dt);
 
 
 
@@ -58,13 +72,14 @@ public class CalendarUtilsTest {
                 "25.11.2019\n",outContent.toString());
     }
 
-   /* @Test
+    @Test
     public void getLocalDate(){
-        Assert.assertEquals("Sun, 2019 November 03 22:34:46\n" +
-                "So, 2019 November 03 22:34:46\n" +
-                "Sun, 2019 November 03 22:34:46\n" +
-                "星期日, 2019 十一月 03 22:34:46\n",outContent.toString());
-    }*/
+        calendarUtils.getLocalDate();
+        Assert.assertEquals("Sun, 2019 November 03 00:00:00\n" +
+                "So, 2019 November 03 00:00:00\n" +
+                "Sun, 2019 November 03 00:00:00\n" +
+                "星期日, 2019 十一月 03 00:00:00\n",outContent.toString());
+    }
     @Test
     public void isFriday13() {
 
@@ -82,9 +97,9 @@ public class CalendarUtilsTest {
     @Test
     public void getDateFromDate() {
         try {
-            //03.11.2019
-            Assert.assertEquals(CalendarUtils.getDateFromDate(sdf.parse("01.01.2019")), "0 years 10 months 2 days");
-            Assert.assertEquals(CalendarUtils.getDateFromDate(sdf.parse("02.12.2017")), "1 years 11 months 1 days");
+
+            Assert.assertEquals(calendarUtils.getDateFromDate(sdf.parse("01.01.2019")), "0 years 10 months 2 days");
+            Assert.assertEquals(calendarUtils.getDateFromDate(sdf.parse("02.12.2017")), "1 years 11 months 1 days");
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -93,7 +108,7 @@ public class CalendarUtilsTest {
     @Test(expected = IllegalArgumentException.class)
     public void getDateFromDate_future_date_param_should_return_exception() {
         try {
-            CalendarUtils.getDateFromDate(sdf.parse("02.02.2020"));
+            calendarUtils.getDateFromDate(sdf.parse("02.02.2020"));
         } catch (ParseException e) {
             e.printStackTrace();
         }
