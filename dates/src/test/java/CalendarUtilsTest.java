@@ -97,7 +97,7 @@ public class CalendarUtilsTest {
     @Test
     public void getDateFromDate() {
         try {
-         
+
             Assert.assertEquals(calendarUtils.getDateFromDate(sdf.parse("01.01.2019")), "0 years 10 months 2 days");
             Assert.assertEquals(calendarUtils.getDateFromDate(sdf.parse("02.12.2017")), "1 years 11 months 1 days");
         } catch (ParseException e) {
